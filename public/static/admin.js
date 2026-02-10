@@ -401,6 +401,57 @@ let usersSortColumn = 'registeredDate';
 let usersSortDirection = 'desc';
 let currentUserDetail = null;
 
+// Master data
+const mockCities = [
+  { code: 'TYO', nameJa: '東京', nameEn: 'Tokyo', country: '日本' },
+  { code: 'OSA', nameJa: '大阪', nameEn: 'Osaka', country: '日本' },
+  { code: 'NYC', nameJa: 'ニューヨーク', nameEn: 'New York', country: 'アメリカ' },
+  { code: 'LAX', nameJa: 'ロサンゼルス', nameEn: 'Los Angeles', country: 'アメリカ' },
+  { code: 'SFO', nameJa: 'サンフランシスコ', nameEn: 'San Francisco', country: 'アメリカ' },
+  { code: 'CHI', nameJa: 'シカゴ', nameEn: 'Chicago', country: 'アメリカ' },
+  { code: 'LON', nameJa: 'ロンドン', nameEn: 'London', country: 'イギリス' },
+  { code: 'PAR', nameJa: 'パリ', nameEn: 'Paris', country: 'フランス' },
+  { code: 'SEL', nameJa: 'ソウル', nameEn: 'Seoul', country: '韓国' },
+  { code: 'SIN', nameJa: 'シンガポール', nameEn: 'Singapore', country: 'シンガポール' }
+];
+
+const mockAirports = [
+  { code: 'NRT', nameJa: '成田国際空港', nameEn: 'Narita International Airport', cityCode: 'TYO', cityName: '東京', country: '日本' },
+  { code: 'HND', nameJa: '東京国際空港（羽田）', nameEn: 'Tokyo International Airport (Haneda)', cityCode: 'TYO', cityName: '東京', country: '日本' },
+  { code: 'KIX', nameJa: '関西国際空港', nameEn: 'Kansai International Airport', cityCode: 'OSA', cityName: '大阪', country: '日本' },
+  { code: 'ITM', nameJa: '大阪国際空港（伊丹）', nameEn: 'Osaka International Airport (Itami)', cityCode: 'OSA', cityName: '大阪', country: '日本' },
+  { code: 'JFK', nameJa: 'ジョン・F・ケネディ国際空港', nameEn: 'John F. Kennedy International Airport', cityCode: 'NYC', cityName: 'ニューヨーク', country: 'アメリカ' },
+  { code: 'EWR', nameJa: 'ニューアーク・リバティー国際空港', nameEn: 'Newark Liberty International Airport', cityCode: 'NYC', cityName: 'ニューヨーク', country: 'アメリカ' },
+  { code: 'LAX', nameJa: 'ロサンゼルス国際空港', nameEn: 'Los Angeles International Airport', cityCode: 'LAX', cityName: 'ロサンゼルス', country: 'アメリカ' },
+  { code: 'SFO', nameJa: 'サンフランシスコ国際空港', nameEn: 'San Francisco International Airport', cityCode: 'SFO', cityName: 'サンフランシスコ', country: 'アメリカ' },
+  { code: 'ORD', nameJa: 'オヘア国際空港', nameEn: "O'Hare International Airport", cityCode: 'CHI', cityName: 'シカゴ', country: 'アメリカ' },
+  { code: 'LHR', nameJa: 'ロンドン・ヒースロー空港', nameEn: 'London Heathrow Airport', cityCode: 'LON', cityName: 'ロンドン', country: 'イギリス' },
+  { code: 'CDG', nameJa: 'シャルル・ド・ゴール空港', nameEn: 'Charles de Gaulle Airport', cityCode: 'PAR', cityName: 'パリ', country: 'フランス' },
+  { code: 'ICN', nameJa: '仁川国際空港', nameEn: 'Incheon International Airport', cityCode: 'SEL', cityName: 'ソウル', country: '韓国' },
+  { code: 'SIN', nameJa: 'シンガポール・チャンギ空港', nameEn: 'Singapore Changi Airport', cityCode: 'SIN', cityName: 'シンガポール', country: 'シンガポール' }
+];
+
+const mockAirlines = [
+  { code: 'NH', nameJa: '全日本空輸', nameEn: 'All Nippon Airways', country: '日本' },
+  { code: 'JL', nameJa: '日本航空', nameEn: 'Japan Airlines', country: '日本' },
+  { code: 'AA', nameJa: 'アメリカン航空', nameEn: 'American Airlines', country: 'アメリカ' },
+  { code: 'UA', nameJa: 'ユナイテッド航空', nameEn: 'United Airlines', country: 'アメリカ' },
+  { code: 'DL', nameJa: 'デルタ航空', nameEn: 'Delta Air Lines', country: 'アメリカ' },
+  { code: 'BA', nameJa: 'ブリティッシュ・エアウェイズ', nameEn: 'British Airways', country: 'イギリス' },
+  { code: 'AF', nameJa: 'エールフランス', nameEn: 'Air France', country: 'フランス' },
+  { code: 'KE', nameJa: '大韓航空', nameEn: 'Korean Air', country: '韓国' },
+  { code: 'SQ', nameJa: 'シンガポール航空', nameEn: 'Singapore Airlines', country: 'シンガポール' },
+  { code: 'LH', nameJa: 'ルフトハンザドイツ航空', nameEn: 'Lufthansa', country: 'ドイツ' }
+];
+
+// Masters page state
+let currentMasterTab = 'cities';
+let filteredCities = [...mockCities];
+let filteredAirports = [...mockAirports];
+let filteredAirlines = [...mockAirlines];
+let currentEditMaster = null;
+let currentDeleteTarget = null;
+
 // ============================================
 // Authentication Functions
 // ============================================
@@ -502,6 +553,8 @@ function showPage(pageName) {
     loadBookingsPage();
   } else if (pageName === 'users') {
     loadUsersPage();
+  } else if (pageName === 'masters') {
+    loadMastersPage();
   }
 }
 
@@ -1495,6 +1548,563 @@ function exportUsersCSV() {
   document.body.removeChild(link);
   
   console.log('Users CSV exported successfully');
+}
+
+// ============================================
+// Masters Management Functions
+// ============================================
+
+function loadMastersPage() {
+  console.log('Loading masters page');
+  switchMasterTab(currentMasterTab);
+}
+
+function switchMasterTab(tab) {
+  console.log('Switching to master tab:', tab);
+  currentMasterTab = tab;
+  
+  // Update tab buttons
+  const tabButtons = document.querySelectorAll('.master-tab-btn');
+  tabButtons.forEach(btn => {
+    if (btn.getAttribute('data-tab') === tab) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+  
+  // Show/hide master contents
+  document.querySelectorAll('.master-content').forEach(content => {
+    content.classList.add('hidden');
+  });
+  
+  if (tab === 'cities') {
+    document.getElementById('citiesMaster').classList.remove('hidden');
+    renderCitiesTable();
+  } else if (tab === 'airports') {
+    document.getElementById('airportsMaster').classList.remove('hidden');
+    renderAirportsTable();
+  } else if (tab === 'airlines') {
+    document.getElementById('airlinesMaster').classList.remove('hidden');
+    renderAirlinesTable();
+  }
+}
+
+// ============================================
+// Cities Master Functions
+// ============================================
+
+function filterCities() {
+  const nameSearch = document.getElementById('searchCityName').value.trim().toLowerCase();
+  const countrySearch = document.getElementById('searchCityCountry').value.trim().toLowerCase();
+  
+  filteredCities = mockCities.filter(city => {
+    const matchName = !nameSearch || 
+      city.nameJa.toLowerCase().includes(nameSearch) || 
+      city.nameEn.toLowerCase().includes(nameSearch) ||
+      city.code.toLowerCase().includes(nameSearch);
+    const matchCountry = !countrySearch || city.country.toLowerCase().includes(countrySearch);
+    return matchName && matchCountry;
+  });
+  
+  renderCitiesTable();
+}
+
+function sortCities(column) {
+  // Implementation similar to booking sort
+  renderCitiesTable();
+}
+
+function renderCitiesTable() {
+  const tbody = document.getElementById('citiesTableBody');
+  
+  if (filteredCities.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+          該当する都市が見つかりませんでした
+        </td>
+      </tr>
+    `;
+    return;
+  }
+  
+  tbody.innerHTML = filteredCities.map(city => `
+    <tr class="hover:bg-gray-50">
+      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${city.code}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${city.nameJa}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${city.nameEn}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${city.country}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+        <button 
+          onclick="editCity('${city.code}')"
+          class="text-blue-600 hover:text-blue-900 mr-4"
+        >
+          <i class="fas fa-edit"></i> 編集
+        </button>
+        <button 
+          onclick="deleteCity('${city.code}')"
+          class="text-red-600 hover:text-red-900"
+        >
+          <i class="fas fa-trash"></i> 削除
+        </button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function showAddCityModal() {
+  currentEditMaster = null;
+  document.getElementById('cityModalTitle').textContent = '都市を追加';
+  document.getElementById('cityCode').value = '';
+  document.getElementById('cityNameJa').value = '';
+  document.getElementById('cityNameEn').value = '';
+  document.getElementById('cityCountry').value = '';
+  document.getElementById('cityCode').disabled = false;
+  document.getElementById('cityModal').classList.remove('hidden');
+}
+
+function editCity(code) {
+  const city = mockCities.find(c => c.code === code);
+  if (!city) return;
+  
+  currentEditMaster = { ...city };
+  document.getElementById('cityModalTitle').textContent = '都市を編集';
+  document.getElementById('cityCode').value = city.code;
+  document.getElementById('cityNameJa').value = city.nameJa;
+  document.getElementById('cityNameEn').value = city.nameEn;
+  document.getElementById('cityCountry').value = city.country;
+  document.getElementById('cityCode').disabled = true;
+  document.getElementById('cityModal').classList.remove('hidden');
+}
+
+function saveCity() {
+  const code = document.getElementById('cityCode').value.trim().toUpperCase();
+  const nameJa = document.getElementById('cityNameJa').value.trim();
+  const nameEn = document.getElementById('cityNameEn').value.trim();
+  const country = document.getElementById('cityCountry').value.trim();
+  
+  if (!code || !nameJa || !nameEn || !country) {
+    alert('すべての項目を入力してください');
+    return;
+  }
+  
+  if (currentEditMaster) {
+    // Update existing
+    const index = mockCities.findIndex(c => c.code === currentEditMaster.code);
+    if (index !== -1) {
+      mockCities[index] = { code, nameJa, nameEn, country };
+    }
+    alert('都市を更新しました');
+  } else {
+    // Add new
+    if (mockCities.find(c => c.code === code)) {
+      alert('この都市コードは既に存在します');
+      return;
+    }
+    mockCities.push({ code, nameJa, nameEn, country });
+    alert('都市を追加しました');
+  }
+  
+  closeCityModal();
+  filterCities();
+}
+
+function deleteCity(code) {
+  currentDeleteTarget = { type: 'city', code };
+  document.getElementById('deleteConfirmMessage').textContent = 
+    `都市「${code}」を削除してもよろしいですか？この操作は取り消すことができません。`;
+  document.getElementById('deleteConfirmModal').classList.remove('hidden');
+}
+
+function closeCityModal() {
+  document.getElementById('cityModal').classList.add('hidden');
+  currentEditMaster = null;
+}
+
+function exportCitiesCSV() {
+  const headers = ['都市コード', '都市名（日本語）', '都市名（英語）', '国名'];
+  const rows = filteredCities.map(city => [
+    city.code,
+    city.nameJa,
+    city.nameEn,
+    city.country
+  ]);
+  
+  const csvContent = '\uFEFF' + [
+    headers.join(','),
+    ...rows.map(row => row.join(','))
+  ].join('\n');
+  
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `cities_${new Date().toISOString().split('T')[0]}.csv`;
+  link.click();
+  
+  console.log('Cities CSV exported successfully');
+}
+
+// ============================================
+// Airports Master Functions
+// ============================================
+
+function filterAirports() {
+  const codeSearch = document.getElementById('searchAirportCode').value.trim().toLowerCase();
+  const nameSearch = document.getElementById('searchAirportName').value.trim().toLowerCase();
+  const citySearch = document.getElementById('searchAirportCity').value.trim().toLowerCase();
+  
+  filteredAirports = mockAirports.filter(airport => {
+    const matchCode = !codeSearch || airport.code.toLowerCase().includes(codeSearch);
+    const matchName = !nameSearch || 
+      airport.nameJa.toLowerCase().includes(nameSearch) || 
+      airport.nameEn.toLowerCase().includes(nameSearch);
+    const matchCity = !citySearch || airport.cityName.toLowerCase().includes(citySearch);
+    return matchCode && matchName && matchCity;
+  });
+  
+  renderAirportsTable();
+}
+
+function sortAirports(column) {
+  // Implementation similar to booking sort
+  renderAirportsTable();
+}
+
+function renderAirportsTable() {
+  const tbody = document.getElementById('airportsTableBody');
+  
+  if (filteredAirports.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+          該当する空港が見つかりませんでした
+        </td>
+      </tr>
+    `;
+    return;
+  }
+  
+  tbody.innerHTML = filteredAirports.map(airport => `
+    <tr class="hover:bg-gray-50">
+      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${airport.code}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${airport.nameJa}</td>
+      <td class="px-6 py-4 text-sm text-gray-500">${airport.nameEn}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${airport.cityName}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${airport.country}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+        <button 
+          onclick="editAirport('${airport.code}')"
+          class="text-blue-600 hover:text-blue-900 mr-4"
+        >
+          <i class="fas fa-edit"></i> 編集
+        </button>
+        <button 
+          onclick="deleteAirport('${airport.code}')"
+          class="text-red-600 hover:text-red-900"
+        >
+          <i class="fas fa-trash"></i> 削除
+        </button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function showAddAirportModal() {
+  currentEditMaster = null;
+  document.getElementById('airportModalTitle').textContent = '空港を追加';
+  document.getElementById('airportCode').value = '';
+  document.getElementById('airportNameJa').value = '';
+  document.getElementById('airportNameEn').value = '';
+  document.getElementById('airportCityCode').value = '';
+  document.getElementById('airportCityName').value = '';
+  document.getElementById('airportCountry').value = '';
+  document.getElementById('airportCode').disabled = false;
+  document.getElementById('airportModal').classList.remove('hidden');
+}
+
+function editAirport(code) {
+  const airport = mockAirports.find(a => a.code === code);
+  if (!airport) return;
+  
+  currentEditMaster = { ...airport };
+  document.getElementById('airportModalTitle').textContent = '空港を編集';
+  document.getElementById('airportCode').value = airport.code;
+  document.getElementById('airportNameJa').value = airport.nameJa;
+  document.getElementById('airportNameEn').value = airport.nameEn;
+  document.getElementById('airportCityCode').value = airport.cityCode;
+  document.getElementById('airportCityName').value = airport.cityName;
+  document.getElementById('airportCountry').value = airport.country;
+  document.getElementById('airportCode').disabled = true;
+  document.getElementById('airportModal').classList.remove('hidden');
+}
+
+function saveAirport() {
+  const code = document.getElementById('airportCode').value.trim().toUpperCase();
+  const nameJa = document.getElementById('airportNameJa').value.trim();
+  const nameEn = document.getElementById('airportNameEn').value.trim();
+  const cityCode = document.getElementById('airportCityCode').value.trim().toUpperCase();
+  const cityName = document.getElementById('airportCityName').value.trim();
+  const country = document.getElementById('airportCountry').value.trim();
+  
+  if (!code || !nameJa || !nameEn || !cityCode || !cityName || !country) {
+    alert('すべての項目を入力してください');
+    return;
+  }
+  
+  if (currentEditMaster) {
+    // Update existing
+    const index = mockAirports.findIndex(a => a.code === currentEditMaster.code);
+    if (index !== -1) {
+      mockAirports[index] = { code, nameJa, nameEn, cityCode, cityName, country };
+    }
+    alert('空港を更新しました');
+  } else {
+    // Add new
+    if (mockAirports.find(a => a.code === code)) {
+      alert('この空港コードは既に存在します');
+      return;
+    }
+    mockAirports.push({ code, nameJa, nameEn, cityCode, cityName, country });
+    alert('空港を追加しました');
+  }
+  
+  closeAirportModal();
+  filterAirports();
+}
+
+function deleteAirport(code) {
+  currentDeleteTarget = { type: 'airport', code };
+  document.getElementById('deleteConfirmMessage').textContent = 
+    `空港「${code}」を削除してもよろしいですか？この操作は取り消すことができません。`;
+  document.getElementById('deleteConfirmModal').classList.remove('hidden');
+}
+
+function closeAirportModal() {
+  document.getElementById('airportModal').classList.add('hidden');
+  currentEditMaster = null;
+}
+
+function exportAirportsCSV() {
+  const headers = ['空港コード', '空港名（日本語）', '空港名（英語）', '都市コード', '都市名', '国名'];
+  const rows = filteredAirports.map(airport => [
+    airport.code,
+    airport.nameJa,
+    airport.nameEn,
+    airport.cityCode,
+    airport.cityName,
+    airport.country
+  ]);
+  
+  const csvContent = '\uFEFF' + [
+    headers.join(','),
+    ...rows.map(row => row.join(','))
+  ].join('\n');
+  
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `airports_${new Date().toISOString().split('T')[0]}.csv`;
+  link.click();
+  
+  console.log('Airports CSV exported successfully');
+}
+
+// ============================================
+// Airlines Master Functions
+// ============================================
+
+function filterAirlines() {
+  const codeSearch = document.getElementById('searchAirlineCode').value.trim().toLowerCase();
+  const nameSearch = document.getElementById('searchAirlineName').value.trim().toLowerCase();
+  
+  filteredAirlines = mockAirlines.filter(airline => {
+    const matchCode = !codeSearch || airline.code.toLowerCase().includes(codeSearch);
+    const matchName = !nameSearch || 
+      airline.nameJa.toLowerCase().includes(nameSearch) || 
+      airline.nameEn.toLowerCase().includes(nameSearch);
+    return matchCode && matchName;
+  });
+  
+  renderAirlinesTable();
+}
+
+function sortAirlines(column) {
+  // Implementation similar to booking sort
+  renderAirlinesTable();
+}
+
+function renderAirlinesTable() {
+  const tbody = document.getElementById('airlinesTableBody');
+  
+  if (filteredAirlines.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+          該当する航空会社が見つかりませんでした
+        </td>
+      </tr>
+    `;
+    return;
+  }
+  
+  tbody.innerHTML = filteredAirlines.map(airline => `
+    <tr class="hover:bg-gray-50">
+      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${airline.code}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${airline.nameJa}</td>
+      <td class="px-6 py-4 text-sm text-gray-500">${airline.nameEn}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${airline.country}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+        <button 
+          onclick="editAirline('${airline.code}')"
+          class="text-blue-600 hover:text-blue-900 mr-4"
+        >
+          <i class="fas fa-edit"></i> 編集
+        </button>
+        <button 
+          onclick="deleteAirline('${airline.code}')"
+          class="text-red-600 hover:text-red-900"
+        >
+          <i class="fas fa-trash"></i> 削除
+        </button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function showAddAirlineModal() {
+  currentEditMaster = null;
+  document.getElementById('airlineModalTitle').textContent = '航空会社を追加';
+  document.getElementById('airlineCode').value = '';
+  document.getElementById('airlineNameJa').value = '';
+  document.getElementById('airlineNameEn').value = '';
+  document.getElementById('airlineCountry').value = '';
+  document.getElementById('airlineCode').disabled = false;
+  document.getElementById('airlineModal').classList.remove('hidden');
+}
+
+function editAirline(code) {
+  const airline = mockAirlines.find(a => a.code === code);
+  if (!airline) return;
+  
+  currentEditMaster = { ...airline };
+  document.getElementById('airlineModalTitle').textContent = '航空会社を編集';
+  document.getElementById('airlineCode').value = airline.code;
+  document.getElementById('airlineNameJa').value = airline.nameJa;
+  document.getElementById('airlineNameEn').value = airline.nameEn;
+  document.getElementById('airlineCountry').value = airline.country;
+  document.getElementById('airlineCode').disabled = true;
+  document.getElementById('airlineModal').classList.remove('hidden');
+}
+
+function saveAirline() {
+  const code = document.getElementById('airlineCode').value.trim().toUpperCase();
+  const nameJa = document.getElementById('airlineNameJa').value.trim();
+  const nameEn = document.getElementById('airlineNameEn').value.trim();
+  const country = document.getElementById('airlineCountry').value.trim();
+  
+  if (!code || !nameJa || !nameEn || !country) {
+    alert('すべての項目を入力してください');
+    return;
+  }
+  
+  if (currentEditMaster) {
+    // Update existing
+    const index = mockAirlines.findIndex(a => a.code === currentEditMaster.code);
+    if (index !== -1) {
+      mockAirlines[index] = { code, nameJa, nameEn, country };
+    }
+    alert('航空会社を更新しました');
+  } else {
+    // Add new
+    if (mockAirlines.find(a => a.code === code)) {
+      alert('この航空会社コードは既に存在します');
+      return;
+    }
+    mockAirlines.push({ code, nameJa, nameEn, country });
+    alert('航空会社を追加しました');
+  }
+  
+  closeAirlineModal();
+  filterAirlines();
+}
+
+function deleteAirline(code) {
+  currentDeleteTarget = { type: 'airline', code };
+  document.getElementById('deleteConfirmMessage').textContent = 
+    `航空会社「${code}」を削除してもよろしいですか？この操作は取り消すことができません。`;
+  document.getElementById('deleteConfirmModal').classList.remove('hidden');
+}
+
+function closeAirlineModal() {
+  document.getElementById('airlineModal').classList.add('hidden');
+  currentEditMaster = null;
+}
+
+function exportAirlinesCSV() {
+  const headers = ['航空会社コード', '航空会社名（日本語）', '航空会社名（英語）', '国名'];
+  const rows = filteredAirlines.map(airline => [
+    airline.code,
+    airline.nameJa,
+    airline.nameEn,
+    airline.country
+  ]);
+  
+  const csvContent = '\uFEFF' + [
+    headers.join(','),
+    ...rows.map(row => row.join(','))
+  ].join('\n');
+  
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `airlines_${new Date().toISOString().split('T')[0]}.csv`;
+  link.click();
+  
+  console.log('Airlines CSV exported successfully');
+}
+
+// ============================================
+// Delete Confirmation Functions
+// ============================================
+
+function confirmDelete() {
+  if (!currentDeleteTarget) return;
+  
+  const { type, code } = currentDeleteTarget;
+  
+  if (type === 'city') {
+    const index = mockCities.findIndex(c => c.code === code);
+    if (index !== -1) {
+      mockCities.splice(index, 1);
+      filteredCities = [...mockCities];
+      renderCitiesTable();
+      alert('都市を削除しました');
+    }
+  } else if (type === 'airport') {
+    const index = mockAirports.findIndex(a => a.code === code);
+    if (index !== -1) {
+      mockAirports.splice(index, 1);
+      filteredAirports = [...mockAirports];
+      renderAirportsTable();
+      alert('空港を削除しました');
+    }
+  } else if (type === 'airline') {
+    const index = mockAirlines.findIndex(a => a.code === code);
+    if (index !== -1) {
+      mockAirlines.splice(index, 1);
+      filteredAirlines = [...mockAirlines];
+      renderAirlinesTable();
+      alert('航空会社を削除しました');
+    }
+  }
+  
+  closeDeleteConfirmModal();
+}
+
+function closeDeleteConfirmModal() {
+  document.getElementById('deleteConfirmModal').classList.add('hidden');
+  currentDeleteTarget = null;
 }
 
 console.log('Admin panel loaded');

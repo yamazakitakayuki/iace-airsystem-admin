@@ -32,6 +32,27 @@ body {
 }
 
 /* ============================================
+   Master Tab Styles
+   ============================================ */
+
+.master-tab-btn {
+  border-bottom-color: transparent;
+  color: rgb(107, 114, 128);
+  transition: all 0.2s;
+}
+
+.master-tab-btn:hover {
+  color: rgb(55, 65, 81);
+  border-bottom-color: rgb(209, 213, 219);
+}
+
+.master-tab-btn.active {
+  color: rgb(37, 99, 235);
+  border-bottom-color: rgb(37, 99, 235);
+  font-weight: 600;
+}
+
+/* ============================================
    Table Styles
    ============================================ */
 

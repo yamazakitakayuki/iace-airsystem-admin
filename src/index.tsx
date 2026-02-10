@@ -533,8 +533,294 @@ app.get('/', (c) => {
 
             {/* Masters Page */}
             <div id="mastersPage" class="page-content hidden">
-              <h2 class="text-2xl font-bold text-gray-800 mb-6">マスタ管理</h2>
-              <p class="text-gray-600">マスタ管理機能を実装中...</p>
+              <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">マスタ管理</h2>
+              </div>
+
+              {/* Master Type Tabs */}
+              <div class="mb-6">
+                <div class="border-b border-gray-200">
+                  <nav class="-mb-px flex space-x-8">
+                    <button
+                      onclick="switchMasterTab('cities')"
+                      class="master-tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm active"
+                      data-tab="cities"
+                    >
+                      <i class="fas fa-city mr-2"></i>
+                      都市マスタ
+                    </button>
+                    <button
+                      onclick="switchMasterTab('airports')"
+                      class="master-tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                      data-tab="airports"
+                    >
+                      <i class="fas fa-plane-departure mr-2"></i>
+                      空港マスタ
+                    </button>
+                    <button
+                      onclick="switchMasterTab('airlines')"
+                      class="master-tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                      data-tab="airlines"
+                    >
+                      <i class="fas fa-plane mr-2"></i>
+                      航空会社マスタ
+                    </button>
+                  </nav>
+                </div>
+              </div>
+
+              {/* Cities Master */}
+              <div id="citiesMaster" class="master-content">
+                <div class="flex justify-between items-center mb-4">
+                  <button
+                    onclick="showAddCityModal()"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                  >
+                    <i class="fas fa-plus mr-2"></i>
+                    都市を追加
+                  </button>
+                  <button
+                    onclick="exportCitiesCSV()"
+                    class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+                  >
+                    <i class="fas fa-file-csv mr-2"></i>
+                    CSV出力
+                  </button>
+                </div>
+
+                {/* Search */}
+                <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-2">都市名</label>
+                      <input
+                        type="text"
+                        id="searchCityName"
+                        placeholder="東京"
+                        oninput="filterCities()"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-2">国名</label>
+                      <input
+                        type="text"
+                        id="searchCityCountry"
+                        placeholder="日本"
+                        oninput="filterCities()"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Cities Table */}
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                  <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                      <thead class="bg-gray-50">
+                        <tr>
+                          <th onclick="sortCities('code')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+                            都市コード <i class="fas fa-sort ml-1"></i>
+                          </th>
+                          <th onclick="sortCities('nameJa')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+                            都市名（日本語） <i class="fas fa-sort ml-1"></i>
+                          </th>
+                          <th onclick="sortCities('nameEn')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+                            都市名（英語） <i class="fas fa-sort ml-1"></i>
+                          </th>
+                          <th onclick="sortCities('country')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+                            国名 <i class="fas fa-sort ml-1"></i>
+                          </th>
+                          <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            操作
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody id="citiesTableBody" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                          <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                            <i class="fas fa-spinner fa-spin mr-2"></i>読み込み中...
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              {/* Airports Master */}
+              <div id="airportsMaster" class="master-content hidden">
+                <div class="flex justify-between items-center mb-4">
+                  <button
+                    onclick="showAddAirportModal()"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                  >
+                    <i class="fas fa-plus mr-2"></i>
+                    空港を追加
+                  </button>
+                  <button
+                    onclick="exportAirportsCSV()"
+                    class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+                  >
+                    <i class="fas fa-file-csv mr-2"></i>
+                    CSV出力
+                  </button>
+                </div>
+
+                {/* Search */}
+                <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-2">空港コード</label>
+                      <input
+                        type="text"
+                        id="searchAirportCode"
+                        placeholder="NRT"
+                        oninput="filterAirports()"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-2">空港名</label>
+                      <input
+                        type="text"
+                        id="searchAirportName"
+                        placeholder="成田"
+                        oninput="filterAirports()"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-2">都市名</label>
+                      <input
+                        type="text"
+                        id="searchAirportCity"
+                        placeholder="東京"
+                        oninput="filterAirports()"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Airports Table */}
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                  <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                      <thead class="bg-gray-50">
+                        <tr>
+                          <th onclick="sortAirports('code')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+                            空港コード <i class="fas fa-sort ml-1"></i>
+                          </th>
+                          <th onclick="sortAirports('nameJa')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+                            空港名（日本語） <i class="fas fa-sort ml-1"></i>
+                          </th>
+                          <th onclick="sortAirports('nameEn')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+                            空港名（英語） <i class="fas fa-sort ml-1"></i>
+                          </th>
+                          <th onclick="sortAirports('cityName')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+                            都市名 <i class="fas fa-sort ml-1"></i>
+                          </th>
+                          <th onclick="sortAirports('country')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+                            国名 <i class="fas fa-sort ml-1"></i>
+                          </th>
+                          <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            操作
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody id="airportsTableBody" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                          <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                            <i class="fas fa-spinner fa-spin mr-2"></i>読み込み中...
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              {/* Airlines Master */}
+              <div id="airlinesMaster" class="master-content hidden">
+                <div class="flex justify-between items-center mb-4">
+                  <button
+                    onclick="showAddAirlineModal()"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                  >
+                    <i class="fas fa-plus mr-2"></i>
+                    航空会社を追加
+                  </button>
+                  <button
+                    onclick="exportAirlinesCSV()"
+                    class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+                  >
+                    <i class="fas fa-file-csv mr-2"></i>
+                    CSV出力
+                  </button>
+                </div>
+
+                {/* Search */}
+                <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-2">航空会社コード</label>
+                      <input
+                        type="text"
+                        id="searchAirlineCode"
+                        placeholder="NH"
+                        oninput="filterAirlines()"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-2">航空会社名</label>
+                      <input
+                        type="text"
+                        id="searchAirlineName"
+                        placeholder="ANA"
+                        oninput="filterAirlines()"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Airlines Table */}
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                  <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                      <thead class="bg-gray-50">
+                        <tr>
+                          <th onclick="sortAirlines('code')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+                            航空会社コード <i class="fas fa-sort ml-1"></i>
+                          </th>
+                          <th onclick="sortAirlines('nameJa')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+                            航空会社名（日本語） <i class="fas fa-sort ml-1"></i>
+                          </th>
+                          <th onclick="sortAirlines('nameEn')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+                            航空会社名（英語） <i class="fas fa-sort ml-1"></i>
+                          </th>
+                          <th onclick="sortAirlines('country')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+                            国名 <i class="fas fa-sort ml-1"></i>
+                          </th>
+                          <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            操作
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody id="airlinesTableBody" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                          <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                            <i class="fas fa-spinner fa-spin mr-2"></i>読み込み中...
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Logs Page */}
@@ -655,6 +941,270 @@ app.get('/', (c) => {
               >
                 <i class="fas fa-ban mr-2"></i>
                 アカウント停止
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Master Edit Modals */}
+      {/* City Edit Modal */}
+      <div id="cityModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full">
+          <div class="p-6">
+            <div class="flex justify-between items-center mb-6 pb-4 border-b">
+              <h3 class="text-2xl font-bold text-gray-800" id="cityModalTitle">都市を追加</h3>
+              <button onclick="closeCityModal()" class="text-gray-400 hover:text-gray-600 text-2xl">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">都市コード *</label>
+                <input
+                  type="text"
+                  id="cityCode"
+                  placeholder="TYO"
+                  maxlength="3"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">都市名（日本語） *</label>
+                <input
+                  type="text"
+                  id="cityNameJa"
+                  placeholder="東京"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">都市名（英語） *</label>
+                <input
+                  type="text"
+                  id="cityNameEn"
+                  placeholder="Tokyo"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">国名 *</label>
+                <input
+                  type="text"
+                  id="cityCountry"
+                  placeholder="日本"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t flex justify-end space-x-4">
+              <button
+                onclick="closeCityModal()"
+                class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+              >
+                キャンセル
+              </button>
+              <button
+                onclick="saveCity()"
+                class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+              >
+                <i class="fas fa-save mr-2"></i>
+                保存
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Airport Edit Modal */}
+      <div id="airportModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full">
+          <div class="p-6">
+            <div class="flex justify-between items-center mb-6 pb-4 border-b">
+              <h3 class="text-2xl font-bold text-gray-800" id="airportModalTitle">空港を追加</h3>
+              <button onclick="closeAirportModal()" class="text-gray-400 hover:text-gray-600 text-2xl">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">空港コード *</label>
+                <input
+                  type="text"
+                  id="airportCode"
+                  placeholder="NRT"
+                  maxlength="3"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">空港名（日本語） *</label>
+                <input
+                  type="text"
+                  id="airportNameJa"
+                  placeholder="成田国際空港"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">空港名（英語） *</label>
+                <input
+                  type="text"
+                  id="airportNameEn"
+                  placeholder="Narita International Airport"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">都市コード *</label>
+                <input
+                  type="text"
+                  id="airportCityCode"
+                  placeholder="TYO"
+                  maxlength="3"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">都市名 *</label>
+                <input
+                  type="text"
+                  id="airportCityName"
+                  placeholder="東京"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">国名 *</label>
+                <input
+                  type="text"
+                  id="airportCountry"
+                  placeholder="日本"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t flex justify-end space-x-4">
+              <button
+                onclick="closeAirportModal()"
+                class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+              >
+                キャンセル
+              </button>
+              <button
+                onclick="saveAirport()"
+                class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+              >
+                <i class="fas fa-save mr-2"></i>
+                保存
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Airline Edit Modal */}
+      <div id="airlineModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full">
+          <div class="p-6">
+            <div class="flex justify-between items-center mb-6 pb-4 border-b">
+              <h3 class="text-2xl font-bold text-gray-800" id="airlineModalTitle">航空会社を追加</h3>
+              <button onclick="closeAirlineModal()" class="text-gray-400 hover:text-gray-600 text-2xl">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">航空会社コード *</label>
+                <input
+                  type="text"
+                  id="airlineCode"
+                  placeholder="NH"
+                  maxlength="2"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">航空会社名（日本語） *</label>
+                <input
+                  type="text"
+                  id="airlineNameJa"
+                  placeholder="全日本空輸"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">航空会社名（英語） *</label>
+                <input
+                  type="text"
+                  id="airlineNameEn"
+                  placeholder="All Nippon Airways"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">国名 *</label>
+                <input
+                  type="text"
+                  id="airlineCountry"
+                  placeholder="日本"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t flex justify-end space-x-4">
+              <button
+                onclick="closeAirlineModal()"
+                class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+              >
+                キャンセル
+              </button>
+              <button
+                onclick="saveAirline()"
+                class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+              >
+                <i class="fas fa-save mr-2"></i>
+                保存
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Delete Confirmation Modal */}
+      <div id="deleteConfirmModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full">
+          <div class="p-6">
+            <div class="flex items-center mb-4">
+              <div class="flex-shrink-0 w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+                <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+              </div>
+              <h3 class="ml-4 text-xl font-bold text-gray-800">削除確認</h3>
+            </div>
+
+            <p class="text-gray-600 mb-6" id="deleteConfirmMessage">
+              この項目を削除してもよろしいですか？この操作は取り消すことができません。
+            </p>
+
+            <div class="flex justify-end space-x-4">
+              <button
+                onclick="closeDeleteConfirmModal()"
+                class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+              >
+                キャンセル
+              </button>
+              <button
+                onclick="confirmDelete()"
+                class="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+              >
+                <i class="fas fa-trash mr-2"></i>
+                削除
               </button>
             </div>
           </div>
