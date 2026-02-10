@@ -296,6 +296,95 @@ const mockBookings = [
   }
 ];
 
+// Mock user data
+const mockUsers = [
+  {
+    id: 'user_001',
+    email: 'yamada@example.com',
+    lastName: '山田',
+    firstName: '太郎',
+    phone: '090-1234-5678',
+    dob: '1990-01-01',
+    gender: 'male',
+    genderText: '男性',
+    passport: 'AB1234567',
+    nationality: '日本',
+    registeredDate: '2025-12-01',
+    lastLogin: '2026-02-10',
+    status: 'active',
+    statusText: '有効',
+    bookingCount: 2
+  },
+  {
+    id: 'user_002',
+    email: 'sato@example.com',
+    lastName: '佐藤',
+    firstName: '花子',
+    phone: '090-2345-6789',
+    dob: '1988-05-15',
+    gender: 'female',
+    genderText: '女性',
+    passport: 'CD9876543',
+    nationality: '日本',
+    registeredDate: '2026-01-15',
+    lastLogin: '2026-02-09',
+    status: 'active',
+    statusText: '有効',
+    bookingCount: 1
+  },
+  {
+    id: 'user_003',
+    email: 'suzuki@example.com',
+    lastName: '鈴木',
+    firstName: '次郎',
+    phone: '090-3456-7890',
+    dob: '1985-08-20',
+    gender: 'male',
+    genderText: '男性',
+    passport: 'EF1122334',
+    nationality: '日本',
+    registeredDate: '2026-01-20',
+    lastLogin: '2026-02-08',
+    status: 'active',
+    statusText: '有効',
+    bookingCount: 1
+  },
+  {
+    id: 'user_004',
+    email: 'tanaka@example.com',
+    lastName: '田中',
+    firstName: '美咲',
+    phone: '090-5555-6666',
+    dob: '1995-03-10',
+    gender: 'female',
+    genderText: '女性',
+    passport: 'GH5544332',
+    nationality: '日本',
+    registeredDate: '2026-02-01',
+    lastLogin: '2026-02-06',
+    status: 'active',
+    statusText: '有効',
+    bookingCount: 1
+  },
+  {
+    id: 'user_005',
+    email: 'watanabe@example.com',
+    lastName: '渡辺',
+    firstName: '健太',
+    phone: '090-7777-8888',
+    dob: '1992-11-25',
+    gender: 'male',
+    genderText: '男性',
+    passport: 'IJ9988776',
+    nationality: '日本',
+    registeredDate: '2026-01-10',
+    lastLogin: '2026-02-05',
+    status: 'suspended',
+    statusText: '停止中',
+    bookingCount: 0
+  }
+];
+
 // Pagination and filtering state
 let currentBookingsPage = 1;
 const bookingsPerPage = 10;
@@ -303,6 +392,14 @@ let filteredBookings = [...mockBookings];
 let sortColumn = 'bookingDate';
 let sortDirection = 'desc';
 let currentBookingDetail = null;
+
+// Users page state
+let currentUsersPage = 1;
+const usersPerPage = 10;
+let filteredUsers = [...mockUsers];
+let usersSortColumn = 'registeredDate';
+let usersSortDirection = 'desc';
+let currentUserDetail = null;
 
 // ============================================
 // Authentication Functions
@@ -403,6 +500,8 @@ function showPage(pageName) {
     loadDashboardData();
   } else if (pageName === 'bookings') {
     loadBookingsPage();
+  } else if (pageName === 'users') {
+    loadUsersPage();
   }
 }
 
@@ -989,6 +1088,413 @@ function exportBookingsCSV() {
   document.body.removeChild(link);
   
   console.log('CSV exported successfully');
+}
+
+// ============================================
+// User Management Functions
+// ============================================
+
+let userFilters = {
+  email: '',
+  fullName: '',
+  status: ''
+};
+
+let userSortColumn = '';
+let userSortDirection = 'asc';
+let currentUserPage = 1;
+
+// Load users page
+function loadUsersPage() {
+  console.log('Loading users page');
+  renderUsersTable();
+}
+
+// Search users
+function searchUsers() {
+  userFilters.email = document.getElementById('searchUserEmail').value.trim().toLowerCase();
+  userFilters.fullName = document.getElementById('searchUserFullName').value.trim().toLowerCase();
+  userFilters.status = document.getElementById('filterUserStatus').value;
+  
+  currentUserPage = 1;
+  renderUsersTable();
+}
+
+// Reset user filters
+function resetUserFilters() {
+  document.getElementById('searchUserEmail').value = '';
+  document.getElementById('searchUserFullName').value = '';
+  document.getElementById('filterUserStatus').value = '';
+  
+  userFilters = {
+    email: '',
+    fullName: '',
+    status: ''
+  };
+  
+  currentUserPage = 1;
+  renderUsersTable();
+}
+
+// Sort users
+function sortUsers(column) {
+  if (userSortColumn === column) {
+    userSortDirection = userSortDirection === 'asc' ? 'desc' : 'asc';
+  } else {
+    userSortColumn = column;
+    userSortDirection = 'asc';
+  }
+  
+  renderUsersTable();
+}
+
+// Filter and sort users
+function getFilteredAndSortedUsers() {
+  let filtered = mockUsers.filter(user => {
+    const emailMatch = !userFilters.email || user.email.toLowerCase().includes(userFilters.email);
+    const nameMatch = !userFilters.fullName || 
+      (user.lastName + ' ' + user.firstName).toLowerCase().includes(userFilters.fullName) ||
+      (user.lastName + user.firstName).toLowerCase().includes(userFilters.fullName);
+    const statusMatch = !userFilters.status || user.status === userFilters.status;
+    
+    return emailMatch && nameMatch && statusMatch;
+  });
+  
+  // Sort
+  if (userSortColumn) {
+    filtered.sort((a, b) => {
+      let aVal, bVal;
+      
+      switch (userSortColumn) {
+        case 'email':
+          aVal = a.email;
+          bVal = b.email;
+          break;
+        case 'name':
+          aVal = a.lastName + a.firstName;
+          bVal = b.lastName + b.firstName;
+          break;
+        case 'registeredDate':
+          aVal = a.registeredDate;
+          bVal = b.registeredDate;
+          break;
+        default:
+          return 0;
+      }
+      
+      if (userSortDirection === 'asc') {
+        return aVal > bVal ? 1 : -1;
+      } else {
+        return aVal < bVal ? 1 : -1;
+      }
+    });
+  }
+  
+  return filtered;
+}
+
+// Render users table
+function renderUsersTable() {
+  const tbody = document.getElementById('usersTableBody');
+  if (!tbody) return;
+  
+  const users = getFilteredAndSortedUsers();
+  const totalUsers = users.length;
+  const totalPages = Math.ceil(totalUsers / usersPerPage);
+  const startIndex = (currentUserPage - 1) * usersPerPage;
+  const endIndex = startIndex + usersPerPage;
+  const pageUsers = users.slice(startIndex, endIndex);
+  
+  if (pageUsers.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="8" class="text-center py-12 text-gray-500">
+          <i class="fas fa-inbox text-4xl mb-2"></i>
+          <p>ユーザーが見つかりません</p>
+        </td>
+      </tr>
+    `;
+  } else {
+    tbody.innerHTML = pageUsers.map(user => {
+      const statusClass = user.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+      
+      return `
+        <tr class="border-b border-gray-100 hover:bg-gray-50">
+          <td class="py-3 px-4 text-sm text-gray-800">${user.email}</td>
+          <td class="py-3 px-4 text-sm">
+            <span class="font-semibold text-gray-800">${user.lastName} ${user.firstName}</span>
+          </td>
+          <td class="py-3 px-4 text-sm text-gray-600">${user.phone}</td>
+          <td class="py-3 px-4 text-sm text-gray-600">${user.registeredDate}</td>
+          <td class="py-3 px-4 text-sm text-gray-600">${user.lastLogin}</td>
+          <td class="py-3 px-4 text-sm text-center">
+            <span class="font-semibold text-blue-600">${user.bookingCount}</span>
+          </td>
+          <td class="py-3 px-4 text-center">
+            <span class="px-3 py-1 rounded-full text-xs font-semibold ${statusClass}">
+              ${user.statusText}
+            </span>
+          </td>
+          <td class="py-3 px-4 text-center">
+            <button
+              onclick="showUserDetail('${user.id}')"
+              class="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition"
+            >
+              <i class="fas fa-eye mr-1"></i>
+              詳細
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+  
+  // Update pagination
+  document.getElementById('usersPaginationInfo').textContent = 
+    `${startIndex + 1}-${Math.min(endIndex, totalUsers)} / 全 ${totalUsers} 件`;
+  
+  const prevBtn = document.getElementById('usersPrevPage');
+  const nextBtn = document.getElementById('usersNextPage');
+  
+  if (prevBtn) prevBtn.disabled = currentUserPage === 1;
+  if (nextBtn) nextBtn.disabled = currentUserPage === totalPages || totalPages === 0;
+}
+
+// Change users page
+function changeUsersPage(direction) {
+  const users = getFilteredAndSortedUsers();
+  const totalPages = Math.ceil(users.length / usersPerPage);
+  
+  currentUserPage += direction;
+  currentUserPage = Math.max(1, Math.min(currentUserPage, totalPages));
+  
+  renderUsersTable();
+}
+
+// Show user detail
+function showUserDetail(userId) {
+  console.log('Showing user detail:', userId);
+  
+  const user = mockUsers.find(u => u.id === userId);
+  if (!user) {
+    alert('ユーザー情報が見つかりません。');
+    return;
+  }
+  
+  currentUserDetail = user;
+  
+  // Get user's bookings
+  const userBookings = mockBookings.filter(b => b.userId === userId);
+  
+  const modal = document.getElementById('userDetailModal');
+  const content = document.getElementById('userDetailContent');
+  const statusBtn = document.getElementById('toggleUserStatusBtn');
+  
+  if (!modal || !content) return;
+  
+  // Update status button
+  if (statusBtn) {
+    if (user.status === 'active') {
+      statusBtn.innerHTML = '<i class="fas fa-ban mr-2"></i>アカウント停止';
+      statusBtn.className = 'px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition';
+    } else {
+      statusBtn.innerHTML = '<i class="fas fa-check-circle mr-2"></i>アカウント再開';
+      statusBtn.className = 'px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition';
+    }
+  }
+  
+  const statusClass = user.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+  
+  content.innerHTML = `
+    <div class="space-y-6">
+      <!-- Basic Info -->}
+      <div class="bg-blue-50 p-4 rounded-lg">
+        <div class="flex justify-between items-center mb-4">
+          <h5 class="font-bold text-gray-800">基本情報</h5>
+          <span class="px-3 py-1 rounded-full text-xs font-semibold ${statusClass}">
+            ${user.statusText}
+          </span>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <p class="text-sm text-gray-600">メールアドレス</p>
+            <p class="font-semibold text-gray-800">${user.email}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-600">氏名</p>
+            <p class="font-semibold text-gray-800">${user.lastName} ${user.firstName}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-600">電話番号</p>
+            <p class="font-semibold text-gray-800">${user.phone}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-600">生年月日</p>
+            <p class="font-semibold text-gray-800">${user.dob}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-600">性別</p>
+            <p class="font-semibold text-gray-800">${user.genderText}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-600">国籍</p>
+            <p class="font-semibold text-gray-800">${user.nationality}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-600">パスポート番号</p>
+            <p class="font-semibold text-gray-800">${user.passport}</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Account Info -->}
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <h5 class="font-bold text-gray-800 mb-4">アカウント情報</h5>
+        <div class="grid grid-cols-3 gap-4">
+          <div>
+            <p class="text-sm text-gray-600">登録日</p>
+            <p class="font-semibold text-gray-800">${user.registeredDate}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-600">最終ログイン</p>
+            <p class="font-semibold text-gray-800">${user.lastLogin}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-600">予約数</p>
+            <p class="font-semibold text-blue-600 text-lg">${user.bookingCount}</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Booking History -->}
+      <div class="bg-white border border-gray-200 rounded-lg p-4">
+        <h5 class="font-bold text-gray-800 mb-4">予約履歴</h5>
+        ${userBookings.length === 0 ? `
+          <p class="text-center text-gray-500 py-4">予約履歴がありません</p>
+        ` : `
+          <div class="space-y-3">
+            ${userBookings.map(booking => `
+              <div class="border border-gray-200 rounded-lg p-3 hover:bg-gray-50">
+                <div class="flex justify-between items-start mb-2">
+                  <span class="font-mono font-semibold text-blue-600">${booking.id}</span>
+                  <span class="px-2 py-1 rounded text-xs font-semibold ${
+                    booking.status === 'confirmed' ? 'bg-green-100 text-green-800' :
+                    booking.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                    'bg-blue-100 text-blue-800'
+                  }">
+                    ${booking.statusText}
+                  </span>
+                </div>
+                <p class="text-sm text-gray-600">${booking.flight.outbound.from} → ${booking.flight.outbound.to}</p>
+                <p class="text-sm text-gray-600">${booking.flight.outbound.date}</p>
+                <p class="text-sm text-gray-800 font-semibold mt-1">¥${booking.pricing.total.toLocaleString()}</p>
+              </div>
+            `).join('')}
+          </div>
+        `}
+      </div>
+    </div>
+  `;
+  
+  modal.classList.remove('hidden');
+}
+
+// Close user detail modal
+function closeUserDetailModal() {
+  const modal = document.getElementById('userDetailModal');
+  if (modal) modal.classList.add('hidden');
+  currentUserDetail = null;
+}
+
+// Toggle user status
+function toggleUserStatus() {
+  if (!currentUserDetail) return;
+  
+  const newStatus = currentUserDetail.status === 'active' ? 'suspended' : 'active';
+  const actionText = newStatus === 'suspended' ? 'アカウントを停止' : 'アカウントを再開';
+  
+  if (confirm(`${currentUserDetail.lastName} ${currentUserDetail.firstName} の${actionText}してもよろしいですか？`)) {
+    // Update user status
+    const user = mockUsers.find(u => u.id === currentUserDetail.id);
+    if (user) {
+      user.status = newStatus;
+      user.statusText = newStatus === 'active' ? '有効' : '停止中';
+    }
+    
+    // Close modal and refresh
+    closeUserDetailModal();
+    renderUsersTable();
+    
+    alert(`${actionText}しました。`);
+  }
+}
+
+// Export users CSV
+function exportUsersCSV() {
+  console.log('Exporting users to CSV');
+  
+  const users = getFilteredAndSortedUsers();
+  
+  if (users.length === 0) {
+    alert('出力するユーザーがありません。');
+    return;
+  }
+  
+  // CSV header
+  const headers = [
+    'ユーザーID',
+    'メールアドレス',
+    '姓',
+    '名',
+    '電話番号',
+    '生年月日',
+    '性別',
+    'パスポート番号',
+    '国籍',
+    '登録日',
+    '最終ログイン',
+    'ステータス',
+    '予約数'
+  ];
+  
+  // CSV rows
+  const rows = users.map(user => [
+    user.id,
+    user.email,
+    user.lastName,
+    user.firstName,
+    user.phone,
+    user.dob,
+    user.genderText,
+    user.passport,
+    user.nationality,
+    user.registeredDate,
+    user.lastLogin,
+    user.statusText,
+    user.bookingCount
+  ]);
+  
+  // Create CSV content
+  const csvContent = [
+    headers.join(','),
+    ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+  ].join('\n');
+  
+  // Create BOM for Excel UTF-8 support
+  const bom = '\uFEFF';
+  const blob = new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8;' });
+  
+  // Download
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  link.setAttribute('href', url);
+  link.setAttribute('download', `users_${new Date().toISOString().split('T')[0]}.csv`);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  console.log('Users CSV exported successfully');
 }
 
 console.log('Admin panel loaded');

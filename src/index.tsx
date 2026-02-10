@@ -399,8 +399,136 @@ app.get('/', (c) => {
 
             {/* Users Page */}
             <div id="usersPage" class="page-content hidden">
-              <h2 class="text-2xl font-bold text-gray-800 mb-6">ユーザー管理</h2>
-              <p class="text-gray-600">ユーザー管理機能を実装中...</p>
+              <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">ユーザー管理</h2>
+                <button
+                  onclick="exportUsersCSV()"
+                  class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center shadow-md hover:shadow-lg"
+                >
+                  <i class="fas fa-file-csv mr-2"></i>
+                  CSV一括出力
+                </button>
+              </div>
+
+              {/* Search and Filter */}
+              <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">検索・フィルター</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">メールアドレス</label>
+                    <input
+                      type="email"
+                      id="searchUserEmail"
+                      placeholder="user@example.com"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">氏名</label>
+                    <input
+                      type="text"
+                      id="searchUserFullName"
+                      placeholder="山田 太郎"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">ステータス</label>
+                    <select
+                      id="filterUserStatus"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                      <option value="">すべて</option>
+                      <option value="active">有効</option>
+                      <option value="suspended">停止中</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="flex justify-end space-x-3">
+                  <button
+                    onclick="resetUserFilters()"
+                    class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+                  >
+                    リセット
+                  </button>
+                  <button
+                    onclick="searchUsers()"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                  >
+                    <i class="fas fa-search mr-2"></i>
+                    検索
+                  </button>
+                </div>
+              </div>
+
+              {/* Users Table */}
+              <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="overflow-x-auto">
+                  <table class="w-full">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th class="text-left py-4 px-4 text-sm font-semibold text-gray-600 cursor-pointer hover:bg-gray-100" onclick="sortUsers('email')">
+                          メールアドレス <i class="fas fa-sort text-gray-400 ml-1"></i>
+                        </th>
+                        <th class="text-left py-4 px-4 text-sm font-semibold text-gray-600 cursor-pointer hover:bg-gray-100" onclick="sortUsers('name')">
+                          氏名 <i class="fas fa-sort text-gray-400 ml-1"></i>
+                        </th>
+                        <th class="text-left py-4 px-4 text-sm font-semibold text-gray-600">
+                          電話番号
+                        </th>
+                        <th class="text-left py-4 px-4 text-sm font-semibold text-gray-600 cursor-pointer hover:bg-gray-100" onclick="sortUsers('registeredDate')">
+                          登録日 <i class="fas fa-sort text-gray-400 ml-1"></i>
+                        </th>
+                        <th class="text-left py-4 px-4 text-sm font-semibold text-gray-600">
+                          最終ログイン
+                        </th>
+                        <th class="text-center py-4 px-4 text-sm font-semibold text-gray-600">
+                          予約数
+                        </th>
+                        <th class="text-center py-4 px-4 text-sm font-semibold text-gray-600">
+                          ステータス
+                        </th>
+                        <th class="text-center py-4 px-4 text-sm font-semibold text-gray-600">
+                          操作
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                      <tr>
+                        <td colspan="8" class="text-center py-12 text-gray-500">
+                          <i class="fas fa-spinner fa-spin mr-2"></i>
+                          読み込み中...
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Pagination */}
+                <div class="border-t border-gray-200 px-6 py-4 flex items-center justify-between">
+                  <div class="text-sm text-gray-600">
+                    <span id="usersPaginationInfo">1-5 / 全 0 件</span>
+                  </div>
+                  <div class="flex space-x-2">
+                    <button
+                      id="usersPrevPage"
+                      onclick="changeUsersPage(-1)"
+                      class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                      disabled
+                    >
+                      <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button
+                      id="usersNextPage"
+                      onclick="changeUsersPage(1)"
+                      class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                      disabled
+                    >
+                      <i class="fas fa-chevron-right"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Masters Page */}
@@ -488,6 +616,47 @@ app.get('/', (c) => {
             >
               キャンセルする
             </button>
+          </div>
+        </div>
+      </div>
+
+      {/* User Detail Modal */}
+      <div id="userDetailModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+          <div class="p-6">
+            {/* Modal Header */}
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="text-2xl font-bold text-gray-800 flex items-center">
+                <i class="fas fa-user text-blue-600 mr-2"></i>
+                ユーザー詳細
+              </h3>
+              <button onclick="closeUserDetailModal()" class="text-gray-400 hover:text-gray-600 text-2xl">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+
+            {/* User Detail Content */}
+            <div id="userDetailContent">
+              {/* Content will be inserted by JavaScript */}
+            </div>
+
+            {/* Action Buttons */}
+            <div class="mt-6 flex justify-end space-x-4">
+              <button
+                onclick="closeUserDetailModal()"
+                class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+              >
+                閉じる
+              </button>
+              <button
+                id="toggleUserStatusBtn"
+                onclick="toggleUserStatus()"
+                class="px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition"
+              >
+                <i class="fas fa-ban mr-2"></i>
+                アカウント停止
+              </button>
+            </div>
           </div>
         </div>
       </div>
