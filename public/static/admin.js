@@ -26,11 +26,53 @@ const mockBookings = [
     userEmail: 'yamada@example.com',
     bookingDate: '2026-02-10',
     status: 'confirmed',
+    statusText: '予約確認済み',
     flight: {
-      outbound: { from: '東京 (NRT)', to: 'ニューヨーク (JFK)', date: '2026-03-15', flightNumber: 'AA101' },
-      return: { from: 'ニューヨーク (JFK)', to: '東京 (NRT)', date: '2026-03-22', flightNumber: 'AA102' }
+      outbound: {
+        from: '東京 (NRT)',
+        to: 'ニューヨーク (JFK)',
+        date: '2026-03-15',
+        flightNumber: 'AA101',
+        airline: 'American Airlines',
+        departureTime: '10:00',
+        arrivalTime: '08:30',
+        duration: '13時間30分',
+        seatClass: 'ビジネス',
+        seat: '5A'
+      },
+      return: {
+        from: 'ニューヨーク (JFK)',
+        to: '東京 (NRT)',
+        date: '2026-03-22',
+        flightNumber: 'AA102',
+        airline: 'American Airlines',
+        departureTime: '14:00',
+        arrivalTime: '17:30+1',
+        duration: '14時間30分',
+        seatClass: 'ビジネス',
+        seat: '5B'
+      }
     },
-    pricing: { total: 355000 }
+    passengers: [
+      {
+        lastName: '山田',
+        firstName: '太郎',
+        gender: '男性',
+        dob: '1990-01-01',
+        passport: 'AB1234567',
+        nationality: '日本'
+      }
+    ],
+    contact: {
+      email: 'yamada@example.com',
+      phone: '090-1234-5678'
+    },
+    pricing: {
+      basePrice: 280000,
+      seatUpgrade: 60000,
+      taxFees: 15000,
+      total: 355000
+    }
   },
   {
     id: 'BK2026020902',
@@ -39,11 +81,53 @@ const mockBookings = [
     userEmail: 'sato@example.com',
     bookingDate: '2026-02-09',
     status: 'confirmed',
+    statusText: '予約確認済み',
     flight: {
-      outbound: { from: '東京 (HND)', to: 'ロサンゼルス (LAX)', date: '2026-04-10', flightNumber: 'NH009' },
-      return: { from: 'ロサンゼルス (LAX)', to: '東京 (HND)', date: '2026-04-20', flightNumber: 'NH010' }
+      outbound: {
+        from: '東京 (HND)',
+        to: 'ロサンゼルス (LAX)',
+        date: '2026-04-10',
+        flightNumber: 'NH009',
+        airline: 'ANA',
+        departureTime: '17:00',
+        arrivalTime: '10:30',
+        duration: '10時間30分',
+        seatClass: 'プレミアムエコノミー',
+        seat: '15C'
+      },
+      return: {
+        from: 'ロサンゼルス (LAX)',
+        to: '東京 (HND)',
+        date: '2026-04-20',
+        flightNumber: 'NH010',
+        airline: 'ANA',
+        departureTime: '11:00',
+        arrivalTime: '14:30+1',
+        duration: '12時間30分',
+        seatClass: 'プレミアムエコノミー',
+        seat: '15D'
+      }
     },
-    pricing: { total: 192000 }
+    passengers: [
+      {
+        lastName: '佐藤',
+        firstName: '花子',
+        gender: '女性',
+        dob: '1988-05-15',
+        passport: 'CD9876543',
+        nationality: '日本'
+      }
+    ],
+    contact: {
+      email: 'sato@example.com',
+      phone: '080-9876-5432'
+    },
+    pricing: {
+      basePrice: 150000,
+      seatUpgrade: 30000,
+      taxFees: 12000,
+      total: 192000
+    }
   },
   {
     id: 'BK2026020803',
@@ -52,11 +136,53 @@ const mockBookings = [
     userEmail: 'suzuki@example.com',
     bookingDate: '2026-02-08',
     status: 'confirmed',
+    statusText: '予約確認済み',
     flight: {
-      outbound: { from: '大阪 (KIX)', to: 'サンフランシスコ (SFO)', date: '2026-05-01', flightNumber: 'JL002' },
-      return: { from: 'サンフランシスコ (SFO)', to: '大阪 (KIX)', date: '2026-05-10', flightNumber: 'JL003' }
+      outbound: {
+        from: '大阪 (KIX)',
+        to: 'サンフランシスコ (SFO)',
+        date: '2026-05-01',
+        flightNumber: 'JL002',
+        airline: 'JAL',
+        departureTime: '16:30',
+        arrivalTime: '09:30',
+        duration: '10時間',
+        seatClass: 'エコノミー',
+        seat: '28A'
+      },
+      return: {
+        from: 'サンフランシスコ (SFO)',
+        to: '大阪 (KIX)',
+        date: '2026-05-10',
+        flightNumber: 'JL003',
+        airline: 'JAL',
+        departureTime: '12:00',
+        arrivalTime: '15:00+1',
+        duration: '11時間',
+        seatClass: 'エコノミー',
+        seat: '28B'
+      }
     },
-    pricing: { total: 280000 }
+    passengers: [
+      {
+        lastName: '鈴木',
+        firstName: '次郎',
+        gender: '男性',
+        dob: '1992-08-20',
+        passport: 'EF1122334',
+        nationality: '日本'
+      }
+    ],
+    contact: {
+      email: 'suzuki@example.com',
+      phone: '070-1111-2222'
+    },
+    pricing: {
+      basePrice: 250000,
+      seatUpgrade: 0,
+      taxFees: 30000,
+      total: 280000
+    }
   },
   {
     id: 'BK2026020704',
@@ -65,11 +191,53 @@ const mockBookings = [
     userEmail: 'yamada@example.com',
     bookingDate: '2026-02-07',
     status: 'confirmed',
+    statusText: '予約確認済み',
     flight: {
-      outbound: { from: '東京 (NRT)', to: 'ロンドン (LHR)', date: '2026-06-15', flightNumber: 'BA005' },
-      return: { from: 'ロンドン (LHR)', to: '東京 (NRT)', date: '2026-06-25', flightNumber: 'BA006' }
+      outbound: {
+        from: '東京 (NRT)',
+        to: 'ロンドン (LHR)',
+        date: '2026-06-15',
+        flightNumber: 'BA005',
+        airline: 'British Airways',
+        departureTime: '11:00',
+        arrivalTime: '15:30',
+        duration: '13時間30分',
+        seatClass: 'エコノミー',
+        seat: '32F'
+      },
+      return: {
+        from: 'ロンドン (LHR)',
+        to: '東京 (NRT)',
+        date: '2026-06-25',
+        flightNumber: 'BA006',
+        airline: 'British Airways',
+        departureTime: '13:00',
+        arrivalTime: '09:30+1',
+        duration: '12時間30分',
+        seatClass: 'エコノミー',
+        seat: '32G'
+      }
     },
-    pricing: { total: 420000 }
+    passengers: [
+      {
+        lastName: '山田',
+        firstName: '太郎',
+        gender: '男性',
+        dob: '1990-01-01',
+        passport: 'AB1234567',
+        nationality: '日本'
+      }
+    ],
+    contact: {
+      email: 'yamada@example.com',
+      phone: '090-1234-5678'
+    },
+    pricing: {
+      basePrice: 380000,
+      seatUpgrade: 0,
+      taxFees: 40000,
+      total: 420000
+    }
   },
   {
     id: 'BK2026020605',
@@ -78,13 +246,63 @@ const mockBookings = [
     userEmail: 'tanaka@example.com',
     bookingDate: '2026-02-06',
     status: 'confirmed',
+    statusText: '予約確認済み',
     flight: {
-      outbound: { from: '東京 (HND)', to: 'シンガポール (SIN)', date: '2026-03-20', flightNumber: 'SQ011' },
-      return: { from: 'シンガポール (SIN)', to: '東京 (HND)', date: '2026-03-27', flightNumber: 'SQ012' }
+      outbound: {
+        from: '東京 (HND)',
+        to: 'シンガポール (SIN)',
+        date: '2026-03-20',
+        flightNumber: 'SQ011',
+        airline: 'Singapore Airlines',
+        departureTime: '09:00',
+        arrivalTime: '15:30',
+        duration: '7時間30分',
+        seatClass: 'エコノミー',
+        seat: '25D'
+      },
+      return: {
+        from: 'シンガポール (SIN)',
+        to: '東京 (HND)',
+        date: '2026-03-27',
+        flightNumber: 'SQ012',
+        airline: 'Singapore Airlines',
+        departureTime: '22:00',
+        arrivalTime: '06:00+1',
+        duration: '7時間',
+        seatClass: 'エコノミー',
+        seat: '25E'
+      }
     },
-    pricing: { total: 150000 }
+    passengers: [
+      {
+        lastName: '田中',
+        firstName: '美咲',
+        gender: '女性',
+        dob: '1995-03-10',
+        passport: 'GH5544332',
+        nationality: '日本'
+      }
+    ],
+    contact: {
+      email: 'tanaka@example.com',
+      phone: '090-5555-6666'
+    },
+    pricing: {
+      basePrice: 130000,
+      seatUpgrade: 0,
+      taxFees: 20000,
+      total: 150000
+    }
   }
 ];
+
+// Pagination and filtering state
+let currentBookingsPage = 1;
+const bookingsPerPage = 10;
+let filteredBookings = [...mockBookings];
+let sortColumn = 'bookingDate';
+let sortDirection = 'desc';
+let currentBookingDetail = null;
 
 // ============================================
 // Authentication Functions
@@ -183,6 +401,8 @@ function showPage(pageName) {
   // Load page-specific data
   if (pageName === 'dashboard') {
     loadDashboardData();
+  } else if (pageName === 'bookings') {
+    loadBookingsPage();
   }
 }
 
@@ -271,6 +491,504 @@ function formatDate(dateString) {
 // Format currency
 function formatCurrency(amount) {
   return '¥' + amount.toLocaleString();
+}
+
+// ============================================
+// Bookings Management Functions
+// ============================================
+
+// Load bookings page
+function loadBookingsPage() {
+  console.log('Loading bookings page');
+  filteredBookings = [...mockBookings];
+  currentBookingsPage = 1;
+  renderBookingsTable();
+}
+
+// Filter bookings
+function filterBookings() {
+  const searchId = document.getElementById('searchBookingId').value.toLowerCase();
+  const searchName = document.getElementById('searchUserName').value.toLowerCase();
+  const searchEmail = document.getElementById('searchEmail').value.toLowerCase();
+  const filterStatus = document.getElementById('filterStatus').value;
+  
+  filteredBookings = mockBookings.filter(booking => {
+    const matchId = !searchId || booking.id.toLowerCase().includes(searchId);
+    const matchName = !searchName || booking.userName.toLowerCase().includes(searchName);
+    const matchEmail = !searchEmail || booking.userEmail.toLowerCase().includes(searchEmail);
+    const matchStatus = !filterStatus || booking.status === filterStatus;
+    
+    return matchId && matchName && matchEmail && matchStatus;
+  });
+  
+  currentBookingsPage = 1;
+  renderBookingsTable();
+}
+
+// Sort bookings
+function sortBookings(column) {
+  if (sortColumn === column) {
+    sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+  } else {
+    sortColumn = column;
+    sortDirection = 'asc';
+  }
+  
+  filteredBookings.sort((a, b) => {
+    let aVal, bVal;
+    
+    switch (column) {
+      case 'id':
+        aVal = a.id;
+        bVal = b.id;
+        break;
+      case 'userName':
+        aVal = a.userName;
+        bVal = b.userName;
+        break;
+      case 'route':
+        aVal = a.flight.outbound.from;
+        bVal = b.flight.outbound.from;
+        break;
+      case 'date':
+        aVal = a.flight.outbound.date;
+        bVal = b.flight.outbound.date;
+        break;
+      case 'bookingDate':
+        aVal = a.bookingDate;
+        bVal = b.bookingDate;
+        break;
+      case 'total':
+        aVal = a.pricing.total;
+        bVal = b.pricing.total;
+        break;
+      default:
+        aVal = a.id;
+        bVal = b.id;
+    }
+    
+    if (sortDirection === 'asc') {
+      return aVal > bVal ? 1 : -1;
+    } else {
+      return aVal < bVal ? 1 : -1;
+    }
+  });
+  
+  renderBookingsTable();
+}
+
+// Render bookings table
+function renderBookingsTable() {
+  const tbody = document.getElementById('bookingsTableBody');
+  if (!tbody) return;
+  
+  const start = (currentBookingsPage - 1) * bookingsPerPage;
+  const end = start + bookingsPerPage;
+  const pageBookings = filteredBookings.slice(start, end);
+  
+  if (pageBookings.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="8" class="text-center py-8 text-gray-500">
+          <i class="fas fa-inbox text-4xl mb-2"></i>
+          <p>該当する予約がありません</p>
+        </td>
+      </tr>
+    `;
+  } else {
+    tbody.innerHTML = pageBookings.map(booking => {
+      const statusColors = {
+        confirmed: 'bg-green-100 text-green-800',
+        cancelled: 'bg-red-100 text-red-800',
+        completed: 'bg-blue-100 text-blue-800'
+      };
+      
+      return `
+        <tr class="border-b border-gray-100 hover:bg-gray-50">
+          <td class="py-3 px-4 text-sm">
+            <span class="font-mono font-semibold text-blue-600">${booking.id}</span>
+          </td>
+          <td class="py-3 px-4 text-sm">
+            <div>
+              <p class="font-semibold text-gray-800">${booking.userName}</p>
+              <p class="text-xs text-gray-500">${booking.userEmail}</p>
+            </div>
+          </td>
+          <td class="py-3 px-4 text-sm">
+            <div>
+              <p class="text-gray-800">${booking.flight.outbound.from} → ${booking.flight.outbound.to}</p>
+              <p class="text-xs text-gray-500">${booking.flight.return.from} → ${booking.flight.return.to}</p>
+            </div>
+          </td>
+          <td class="py-3 px-4 text-sm text-gray-600">
+            ${booking.flight.outbound.date}
+          </td>
+          <td class="py-3 px-4 text-sm text-gray-600">
+            ${booking.bookingDate}
+          </td>
+          <td class="py-3 px-4 text-sm">
+            <span class="px-2 py-1 rounded-full text-xs font-semibold ${statusColors[booking.status]}">
+              ${booking.statusText}
+            </span>
+          </td>
+          <td class="py-3 px-4 text-sm text-right">
+            <span class="font-bold text-gray-800">¥${booking.pricing.total.toLocaleString()}</span>
+          </td>
+          <td class="py-3 px-4 text-sm text-center">
+            <button
+              onclick="showBookingDetail('${booking.id}')"
+              class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-xs"
+            >
+              <i class="fas fa-eye mr-1"></i>
+              詳細
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+  
+  // Update pagination
+  updatePagination();
+}
+
+// Update pagination
+function updatePagination() {
+  const totalPages = Math.ceil(filteredBookings.length / bookingsPerPage);
+  
+  document.getElementById('bookingsCount').textContent = filteredBookings.length;
+  document.getElementById('currentPage').textContent = currentBookingsPage;
+  document.getElementById('totalPages').textContent = totalPages || 1;
+  
+  const prevBtn = document.getElementById('prevPageBtn');
+  const nextBtn = document.getElementById('nextPageBtn');
+  
+  if (prevBtn) {
+    prevBtn.disabled = currentBookingsPage === 1;
+  }
+  
+  if (nextBtn) {
+    nextBtn.disabled = currentBookingsPage >= totalPages || totalPages === 0;
+  }
+}
+
+// Change page
+function changePage(direction) {
+  const totalPages = Math.ceil(filteredBookings.length / bookingsPerPage);
+  const newPage = currentBookingsPage + direction;
+  
+  if (newPage >= 1 && newPage <= totalPages) {
+    currentBookingsPage = newPage;
+    renderBookingsTable();
+  }
+}
+
+// Show booking detail
+function showBookingDetail(bookingId) {
+  console.log('Showing booking detail:', bookingId);
+  
+  const booking = mockBookings.find(b => b.id === bookingId);
+  if (!booking) {
+    alert('予約情報が見つかりません。');
+    return;
+  }
+  
+  currentBookingDetail = booking;
+  
+  const modal = document.getElementById('bookingDetailModal');
+  const content = document.getElementById('bookingDetailContent');
+  const cancelBtn = document.getElementById('cancelBookingBtn');
+  const editBtn = document.getElementById('editBookingBtn');
+  
+  if (!modal || !content) return;
+  
+  // Hide edit/cancel buttons if cancelled or completed
+  if (cancelBtn && editBtn) {
+    if (booking.status === 'cancelled' || booking.status === 'completed') {
+      cancelBtn.classList.add('hidden');
+      editBtn.classList.add('hidden');
+    } else {
+      cancelBtn.classList.remove('hidden');
+      editBtn.classList.remove('hidden');
+    }
+  }
+  
+  const statusColors = {
+    confirmed: 'bg-green-100 text-green-800',
+    cancelled: 'bg-red-100 text-red-800',
+    completed: 'bg-blue-100 text-blue-800'
+  };
+  
+  content.innerHTML = `
+    <div class="space-y-6">
+      <!-- Status -->
+      <div class="flex justify-between items-center pb-4 border-b">
+        <div>
+          <h4 class="text-xl font-bold text-gray-800">予約番号: ${booking.id}</h4>
+          <p class="text-sm text-gray-500">予約日: ${booking.bookingDate}</p>
+        </div>
+        <span class="px-4 py-2 rounded-full text-sm font-semibold ${statusColors[booking.status]}">
+          ${booking.statusText}
+        </span>
+      </div>
+      
+      <!-- User Information -->
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <h5 class="font-bold text-gray-800 mb-3 flex items-center">
+          <i class="fas fa-user text-blue-600 mr-2"></i>
+          ユーザー情報
+        </h5>
+        <div class="grid grid-cols-2 gap-2 text-sm">
+          <p class="text-gray-600">氏名: ${booking.userName}</p>
+          <p class="text-gray-600">メール: ${booking.userEmail}</p>
+          <p class="text-gray-600">電話: ${booking.contact.phone}</p>
+          <p class="text-gray-600">ユーザーID: ${booking.userId}</p>
+        </div>
+      </div>
+      
+      <!-- Flight Information -->}
+      <div class="bg-blue-50 p-4 rounded-lg">
+        <h5 class="font-bold text-gray-800 mb-4 flex items-center">
+          <i class="fas fa-plane text-blue-600 mr-2"></i>
+          フライト情報
+        </h5>
+        
+        <div class="space-y-4">
+          <!-- Outbound -->
+          <div class="bg-white p-4 rounded-lg">
+            <p class="text-sm text-gray-600 mb-2 font-semibold">
+              <i class="fas fa-plane-departure text-blue-600 mr-2"></i>
+              往路
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p class="font-semibold text-lg">${booking.flight.outbound.from} → ${booking.flight.outbound.to}</p>
+                <p class="text-sm text-gray-600">${booking.flight.outbound.date}</p>
+                <p class="text-sm text-gray-600">${booking.flight.outbound.departureTime} - ${booking.flight.outbound.arrivalTime}</p>
+              </div>
+              <div class="text-sm">
+                <p class="text-gray-600">便名: <span class="font-semibold">${booking.flight.outbound.flightNumber}</span></p>
+                <p class="text-gray-600">航空会社: ${booking.flight.outbound.airline}</p>
+                <p class="text-gray-600">座席クラス: ${booking.flight.outbound.seatClass}</p>
+                <p class="text-gray-600">座席番号: <span class="font-semibold">${booking.flight.outbound.seat}</span></p>
+                <p class="text-gray-600">所要時間: ${booking.flight.outbound.duration}</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Return -->
+          <div class="bg-white p-4 rounded-lg">
+            <p class="text-sm text-gray-600 mb-2 font-semibold">
+              <i class="fas fa-plane-arrival text-blue-600 mr-2"></i>
+              復路
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p class="font-semibold text-lg">${booking.flight.return.from} → ${booking.flight.return.to}</p>
+                <p class="text-sm text-gray-600">${booking.flight.return.date}</p>
+                <p class="text-sm text-gray-600">${booking.flight.return.departureTime} - ${booking.flight.return.arrivalTime}</p>
+              </div>
+              <div class="text-sm">
+                <p class="text-gray-600">便名: <span class="font-semibold">${booking.flight.return.flightNumber}</span></p>
+                <p class="text-gray-600">航空会社: ${booking.flight.return.airline}</p>
+                <p class="text-gray-600">座席クラス: ${booking.flight.return.seatClass}</p>
+                <p class="text-gray-600">座席番号: <span class="font-semibold">${booking.flight.return.seat}</span></p>
+                <p class="text-gray-600">所要時間: ${booking.flight.return.duration}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Passenger Information -->
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <h5 class="font-bold text-gray-800 mb-4 flex items-center">
+          <i class="fas fa-users text-blue-600 mr-2"></i>
+          乗客情報
+        </h5>
+        ${booking.passengers.map((passenger, index) => `
+          <div class="bg-white p-4 rounded-lg mb-2">
+            <p class="font-semibold mb-2">乗客 ${index + 1}</p>
+            <div class="grid grid-cols-2 gap-2 text-sm">
+              <p class="text-gray-600">氏名: ${passenger.lastName} ${passenger.firstName}</p>
+              <p class="text-gray-600">性別: ${passenger.gender}</p>
+              <p class="text-gray-600">生年月日: ${passenger.dob}</p>
+              <p class="text-gray-600">国籍: ${passenger.nationality}</p>
+              <p class="text-gray-600">パスポート番号: ${passenger.passport}</p>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      
+      <!-- Pricing -->
+      <div class="bg-blue-50 p-4 rounded-lg">
+        <h5 class="font-bold text-gray-800 mb-4 flex items-center">
+          <i class="fas fa-credit-card text-blue-600 mr-2"></i>
+          料金詳細
+        </h5>
+        <div class="bg-white p-4 rounded-lg space-y-2">
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600">基本料金:</span>
+            <span class="font-semibold">¥${booking.pricing.basePrice.toLocaleString()}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600">座席アップグレード:</span>
+            <span class="font-semibold">¥${booking.pricing.seatUpgrade.toLocaleString()}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600">税金・手数料:</span>
+            <span class="font-semibold">¥${booking.pricing.taxFees.toLocaleString()}</span>
+          </div>
+          <div class="border-t border-gray-200 pt-2 flex justify-between">
+            <span class="font-bold text-lg">合計:</span>
+            <span class="font-bold text-xl text-blue-600">¥${booking.pricing.total.toLocaleString()}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  modal.classList.remove('hidden');
+}
+
+// Close booking detail modal
+function closeBookingDetailModal() {
+  const modal = document.getElementById('bookingDetailModal');
+  if (modal) modal.classList.add('hidden');
+  currentBookingDetail = null;
+}
+
+// Show cancel booking confirmation
+function showCancelBookingConfirm() {
+  const modal = document.getElementById('cancelConfirmModal');
+  if (modal) modal.classList.remove('hidden');
+}
+
+// Close cancel confirmation
+function closeCancelConfirm() {
+  const modal = document.getElementById('cancelConfirmModal');
+  if (modal) modal.classList.add('hidden');
+}
+
+// Confirm cancel booking
+function confirmCancelBooking() {
+  if (!currentBookingDetail) return;
+  
+  console.log('Cancelling booking:', currentBookingDetail.id);
+  
+  // Update booking status
+  const booking = mockBookings.find(b => b.id === currentBookingDetail.id);
+  if (booking) {
+    booking.status = 'cancelled';
+    booking.statusText = 'キャンセル済み';
+  }
+  
+  // Close modals
+  closeCancelConfirm();
+  closeBookingDetailModal();
+  
+  // Reload table
+  filterBookings();
+  
+  alert('予約をキャンセルしました。');
+}
+
+// Show edit booking modal (placeholder)
+function showEditBookingModal() {
+  alert('予約編集機能は次のフェーズで実装予定です。');
+}
+
+// Export bookings to CSV
+function exportBookingsCSV() {
+  console.log('Exporting bookings to CSV');
+  
+  // CSV header
+  const headers = [
+    '予約番号',
+    'ユーザーID',
+    'ユーザー名',
+    'メールアドレス',
+    '電話番号',
+    '予約日',
+    'ステータス',
+    '往路_出発地',
+    '往路_目的地',
+    '往路_日付',
+    '往路_便名',
+    '往路_航空会社',
+    '往路_出発時刻',
+    '往路_到着時刻',
+    '往路_座席クラス',
+    '往路_座席番号',
+    '復路_出発地',
+    '復路_目的地',
+    '復路_日付',
+    '復路_便名',
+    '復路_航空会社',
+    '復路_出発時刻',
+    '復路_到着時刻',
+    '復路_座席クラス',
+    '復路_座席番号',
+    '基本料金',
+    '座席アップグレード',
+    '税金・手数料',
+    '合計金額'
+  ];
+  
+  // CSV data
+  const rows = filteredBookings.map(booking => [
+    booking.id,
+    booking.userId,
+    booking.userName,
+    booking.userEmail,
+    booking.contact.phone,
+    booking.bookingDate,
+    booking.statusText,
+    booking.flight.outbound.from,
+    booking.flight.outbound.to,
+    booking.flight.outbound.date,
+    booking.flight.outbound.flightNumber,
+    booking.flight.outbound.airline,
+    booking.flight.outbound.departureTime,
+    booking.flight.outbound.arrivalTime,
+    booking.flight.outbound.seatClass,
+    booking.flight.outbound.seat,
+    booking.flight.return.from,
+    booking.flight.return.to,
+    booking.flight.return.date,
+    booking.flight.return.flightNumber,
+    booking.flight.return.airline,
+    booking.flight.return.departureTime,
+    booking.flight.return.arrivalTime,
+    booking.flight.return.seatClass,
+    booking.flight.return.seat,
+    booking.pricing.basePrice,
+    booking.pricing.seatUpgrade,
+    booking.pricing.taxFees,
+    booking.pricing.total
+  ]);
+  
+  // Create CSV content
+  const csvContent = [
+    headers.join(','),
+    ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+  ].join('\n');
+  
+  // Create BOM for Excel UTF-8 support
+  const bom = '\uFEFF';
+  const blob = new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8;' });
+  
+  // Download
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  link.setAttribute('href', url);
+  link.setAttribute('download', `bookings_${new Date().toISOString().split('T')[0]}.csv`);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  console.log('CSV exported successfully');
 }
 
 console.log('Admin panel loaded');

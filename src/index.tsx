@@ -268,8 +268,133 @@ app.get('/', (c) => {
 
             {/* Bookings Page */}
             <div id="bookingsPage" class="page-content hidden">
-              <h2 class="text-2xl font-bold text-gray-800 mb-6">予約管理</h2>
-              <p class="text-gray-600">予約管理機能を実装中...</p>
+              <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">予約管理</h2>
+                <button
+                  onclick="exportBookingsCSV()"
+                  class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center"
+                >
+                  <i class="fas fa-file-csv mr-2"></i>
+                  CSV出力
+                </button>
+              </div>
+
+              {/* Search and Filter */}
+              <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">予約番号</label>
+                    <input
+                      type="text"
+                      id="searchBookingId"
+                      placeholder="BK2026..."
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      onkeyup="filterBookings()"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">ユーザー名</label>
+                    <input
+                      type="text"
+                      id="searchUserName"
+                      placeholder="山田..."
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      onkeyup="filterBookings()"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">メールアドレス</label>
+                    <input
+                      type="text"
+                      id="searchEmail"
+                      placeholder="user@example.com"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      onkeyup="filterBookings()"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">ステータス</label>
+                    <select
+                      id="filterStatus"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      onchange="filterBookings()"
+                    >
+                      <option value="">すべて</option>
+                      <option value="confirmed">予約確認済み</option>
+                      <option value="cancelled">キャンセル済み</option>
+                      <option value="completed">利用済み</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bookings Table */}
+              <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="overflow-x-auto">
+                  <table class="w-full">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th class="text-left py-4 px-4 text-sm font-semibold text-gray-600 cursor-pointer hover:bg-gray-100" onclick="sortBookings('id')">
+                          予約番号 <i class="fas fa-sort text-gray-400 ml-1"></i>
+                        </th>
+                        <th class="text-left py-4 px-4 text-sm font-semibold text-gray-600 cursor-pointer hover:bg-gray-100" onclick="sortBookings('userName')">
+                          ユーザー <i class="fas fa-sort text-gray-400 ml-1"></i>
+                        </th>
+                        <th class="text-left py-4 px-4 text-sm font-semibold text-gray-600 cursor-pointer hover:bg-gray-100" onclick="sortBookings('route')">
+                          区間 <i class="fas fa-sort text-gray-400 ml-1"></i>
+                        </th>
+                        <th class="text-left py-4 px-4 text-sm font-semibold text-gray-600 cursor-pointer hover:bg-gray-100" onclick="sortBookings('date')">
+                          出発日 <i class="fas fa-sort text-gray-400 ml-1"></i>
+                        </th>
+                        <th class="text-left py-4 px-4 text-sm font-semibold text-gray-600 cursor-pointer hover:bg-gray-100" onclick="sortBookings('bookingDate')">
+                          予約日 <i class="fas fa-sort text-gray-400 ml-1"></i>
+                        </th>
+                        <th class="text-left py-4 px-4 text-sm font-semibold text-gray-600">ステータス</th>
+                        <th class="text-right py-4 px-4 text-sm font-semibold text-gray-600 cursor-pointer hover:bg-gray-100" onclick="sortBookings('total')">
+                          金額 <i class="fas fa-sort text-gray-400 ml-1"></i>
+                        </th>
+                        <th class="text-center py-4 px-4 text-sm font-semibold text-gray-600">操作</th>
+                      </tr>
+                    </thead>
+                    <tbody id="bookingsTableBody">
+                      <tr>
+                        <td colspan="8" class="text-center py-8 text-gray-500">
+                          <i class="fas fa-spinner fa-spin mr-2"></i>
+                          読み込み中...
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Pagination */}
+                <div class="border-t border-gray-200 px-6 py-4 flex items-center justify-between">
+                  <div class="text-sm text-gray-600">
+                    <span id="bookingsCount">0</span> 件の予約
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <button
+                      id="prevPageBtn"
+                      onclick="changePage(-1)"
+                      class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                      disabled
+                    >
+                      <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <span class="text-sm text-gray-600">
+                      ページ <span id="currentPage">1</span> / <span id="totalPages">1</span>
+                    </span>
+                    <button
+                      id="nextPageBtn"
+                      onclick="changePage(1)"
+                      class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                      disabled
+                    >
+                      <i class="fas fa-chevron-right"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Users Page */}
@@ -290,6 +415,80 @@ app.get('/', (c) => {
               <p class="text-gray-600">操作ログ機能を実装中...</p>
             </div>
           </main>
+        </div>
+      </div>
+
+      {/* Booking Detail Modal */}
+      <div id="bookingDetailModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+          <div class="p-6">
+            {/* Modal Header */}
+            <div class="flex justify-between items-center mb-6 pb-4 border-b">
+              <h3 class="text-2xl font-bold text-gray-800">予約詳細</h3>
+              <button onclick="closeBookingDetailModal()" class="text-gray-400 hover:text-gray-600 text-2xl">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+
+            {/* Booking Detail Content */}
+            <div id="bookingDetailContent">
+              {/* Content will be inserted by JavaScript */}
+            </div>
+
+            {/* Action Buttons */}
+            <div class="mt-6 pt-4 border-t flex justify-end space-x-4">
+              <button
+                onclick="closeBookingDetailModal()"
+                class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+              >
+                閉じる
+              </button>
+              <button
+                id="editBookingBtn"
+                onclick="showEditBookingModal()"
+                class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+              >
+                <i class="fas fa-edit mr-2"></i>
+                編集
+              </button>
+              <button
+                id="cancelBookingBtn"
+                onclick="showCancelBookingConfirm()"
+                class="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+              >
+                <i class="fas fa-times-circle mr-2"></i>
+                キャンセル
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Cancel Confirmation Modal */}
+      <div id="cancelConfirmModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
+          <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+            <i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i>
+            予約キャンセル確認
+          </h3>
+          <p class="text-gray-600 mb-6">
+            この予約をキャンセルしてもよろしいですか？<br/>
+            この操作は取り消すことができません。
+          </p>
+          <div class="flex justify-end space-x-4">
+            <button
+              onclick="closeCancelConfirm()"
+              class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+            >
+              戻る
+            </button>
+            <button
+              onclick="confirmCancelBooking()"
+              class="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+            >
+              キャンセルする
+            </button>
+          </div>
         </div>
       </div>
 
