@@ -10,6 +10,7 @@
 ## 公開URL
 - **開発環境**: https://3001-ixum760vzlh6kn5x9qt8b-dfc00ec5.sandbox.novita.ai
 - **ポート**: 3001
+- **GitHub**: https://github.com/yamazakitakayuki/iace-airsystem-admin
 
 ## デモ認証情報
 - **Email**: admin@example.com
